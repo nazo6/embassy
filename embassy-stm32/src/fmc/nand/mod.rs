@@ -33,8 +33,8 @@ pub enum NandDataWidth {
 impl Into<vals::Pwid> for NandDataWidth {
     fn into(self) -> vals::Pwid {
         match self {
-            NandDataWidth::Bits8 => vals::Pwid::BITS8,
-            NandDataWidth::Bits16 => vals::Pwid::BITS16,
+            NandDataWidth::Bits8 => vals::Pwid::Bits8,
+            NandDataWidth::Bits16 => vals::Pwid::Bits16,
         }
     }
 }
@@ -274,7 +274,7 @@ impl<'a, 'd, T: fmc::Instance> Nand<'a, 'd, T> {
         pcr.modify(|reg| {
             reg.set_tar(tar);
             reg.set_tclr(tclr);
-            reg.set_eccps(vals::Eccps::BYTES512); // 0b1: 512 bytes
+            reg.set_eccps(vals::Eccps::Bytes512); // 0b1: 512 bytes
             reg.set_eccen(false); // 0b0: ECC computation disabled
             #[cfg(fmc_v4)]
             reg.set_ptyp(vals::Ptyp::NAND); // 0b1: NAND Flash

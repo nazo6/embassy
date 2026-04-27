@@ -486,7 +486,7 @@ impl<'a, 'd, T: super::Instance> NorSram<'a, 'd, T> {
 
         if self.bank == FmcSramBank::Bank1 {
             // SRAM/NOR-Flash chip-select control register
-            regs.bcr1().modify::<Result<(), NorSramInitError>>(|bcr| {
+            regs.bcr1().modify(|bcr| {
                 // Remap the address space for the entire SRAM bank.
                 // if self.bank == FmcSramBank::Bank1Remapped {
                 //     bcr.set_bmap(0b01); // NOR/PSRAM bank and SDRAM bank 1/bank2 are swapped
@@ -509,13 +509,13 @@ impl<'a, 'd, T: super::Instance> NorSram<'a, 'd, T> {
                 bcr.set_waiten(self.config.wait_signal_enable); // Wait signal
                 bcr.set_wren(self.config.write_enable); // Write operation
                 bcr.set_waitcfg(match self.config.wait_signal_enable_active {
-                    NorSramWaitSignalActive::BeforeWaitState => vals::Waitcfg::BEFORE_WAIT_STATE,
-                    NorSramWaitSignalActive::DuringWaitState => vals::Waitcfg::DURING_WAIT_STATE,
+                    NorSramWaitSignalActive::BeforeWaitState => vals::Waitcfg::BeforeWaitState,
+                    NorSramWaitSignalActive::DuringWaitState => vals::Waitcfg::DuringWaitState,
                 }); // Wait signal active
 
                 bcr.set_waitpol(match self.config.wait_signal_enable_polarity {
-                    NorSramWaitSignalPolarity::ActiveLow => vals::Waitpol::ACTIVE_LOW,
-                    NorSramWaitSignalPolarity::ActiveHigh => vals::Waitpol::ACTIVE_HIGH,
+                    NorSramWaitSignalPolarity::ActiveLow => vals::Waitpol::ActiveLow,
+                    NorSramWaitSignalPolarity::ActiveHigh => vals::Waitpol::ActiveHigh,
                 }); // Wait signal polarity
 
                 bcr.set_bursten(self.config.burst_access_mode_enable); // Burst access mode
@@ -523,15 +523,15 @@ impl<'a, 'd, T: super::Instance> NorSram<'a, 'd, T> {
                 bcr.set_faccen(norsram_flash_access_enable); // NOR Flash memory access 
 
                 bcr.set_mwid(match self.config.memory_data_width {
-                    NorSramMemoryDataWidth::Bits8 => vals::Mwid::BITS8,
-                    NorSramMemoryDataWidth::Bits16 => vals::Mwid::BITS16,
-                    NorSramMemoryDataWidth::Bits32 => vals::Mwid::BITS32,
+                    NorSramMemoryDataWidth::Bits8 => vals::Mwid::Bits8,
+                    NorSramMemoryDataWidth::Bits16 => vals::Mwid::Bits16,
+                    NorSramMemoryDataWidth::Bits32 => vals::Mwid::Bits32,
                 }); // Memory data width
 
                 bcr.set_mtyp(match self.config.memory_type {
-                    NorSramMemoryType::Sram => vals::Mtyp::SRAM,
-                    NorSramMemoryType::Psram => vals::Mtyp::PSRAM,
-                    NorSramMemoryType::Flash => vals::Mtyp::FLASH,
+                    NorSramMemoryType::Sram => vals::Mtyp::Sram,
+                    NorSramMemoryType::Psram => vals::Mtyp::Psram,
+                    NorSramMemoryType::Flash => vals::Mtyp::Flash,
                 }); // Memory types
 
                 bcr.set_muxen(self.config.data_address_mux_enabled); // Data address mux
@@ -540,17 +540,15 @@ impl<'a, 'd, T: super::Instance> NorSram<'a, 'd, T> {
                 bcr.set_wfdis(self.config.write_fifo_disable);
 
                 bcr.set_cpsize(match self.config.page_size {
-                    NorSramPageSize::NoBurstSplit => vals::Cpsize::NO_BURST_SPLIT,
-                    NorSramPageSize::Bytes128 => vals::Cpsize::BYTES128,
-                    NorSramPageSize::Bytes256 => vals::Cpsize::BYTES256,
-                    NorSramPageSize::Bytes512 => vals::Cpsize::BYTES512,
-                    NorSramPageSize::Bytes1024 => vals::Cpsize::BYTES1024,
+                    NorSramPageSize::NoBurstSplit => vals::Cpsize::NoBurstSplit,
+                    NorSramPageSize::Bytes128 => vals::Cpsize::Bytes128,
+                    NorSramPageSize::Bytes256 => vals::Cpsize::Bytes256,
+                    NorSramPageSize::Bytes512 => vals::Cpsize::Bytes512,
+                    NorSramPageSize::Bytes1024 => vals::Cpsize::Bytes1024,
                 });
 
                 trace!("fmc bcr: {}", bcr);
-
-                Ok(())
-            })?;
+            });
         } else {
             regs.bcr(match self.bank {
                 FmcSramBank::Bank1 => panic!("invalid"),
@@ -558,7 +556,7 @@ impl<'a, 'd, T: super::Instance> NorSram<'a, 'd, T> {
                 FmcSramBank::Bank3 => 1,
                 FmcSramBank::Bank4 => 2,
             })
-            .modify::<Result<(), NorSramInitError>>(|bcr| {
+            .modify(|bcr| {
                 // Burst enable for PSRAM
                 #[cfg(any(fmc_v1x3, fmc_v2x1))]
                 bcr.set_cburstrw(self.config.write_burst_enable);
@@ -573,13 +571,13 @@ impl<'a, 'd, T: super::Instance> NorSram<'a, 'd, T> {
                 bcr.set_waiten(self.config.wait_signal_enable); // Wait signal
                 bcr.set_wren(self.config.write_enable); // Write operation
                 bcr.set_waitcfg(match self.config.wait_signal_enable_active {
-                    NorSramWaitSignalActive::BeforeWaitState => vals::Waitcfg::BEFORE_WAIT_STATE,
-                    NorSramWaitSignalActive::DuringWaitState => vals::Waitcfg::DURING_WAIT_STATE,
+                    NorSramWaitSignalActive::BeforeWaitState => vals::Waitcfg::BeforeWaitState,
+                    NorSramWaitSignalActive::DuringWaitState => vals::Waitcfg::DuringWaitState,
                 }); // Wait signal active
 
                 bcr.set_waitpol(match self.config.wait_signal_enable_polarity {
-                    NorSramWaitSignalPolarity::ActiveLow => vals::Waitpol::ACTIVE_LOW,
-                    NorSramWaitSignalPolarity::ActiveHigh => vals::Waitpol::ACTIVE_HIGH,
+                    NorSramWaitSignalPolarity::ActiveLow => vals::Waitpol::ActiveLow,
+                    NorSramWaitSignalPolarity::ActiveHigh => vals::Waitpol::ActiveHigh,
                 }); // Wait signal polarity
 
                 bcr.set_bursten(self.config.burst_access_mode_enable); // Burst access mode
@@ -587,31 +585,29 @@ impl<'a, 'd, T: super::Instance> NorSram<'a, 'd, T> {
                 bcr.set_faccen(norsram_flash_access_enable); // NOR Flash memory access 
 
                 bcr.set_mwid(match self.config.memory_data_width {
-                    NorSramMemoryDataWidth::Bits8 => vals::Mwid::BITS8,
-                    NorSramMemoryDataWidth::Bits16 => vals::Mwid::BITS16,
-                    NorSramMemoryDataWidth::Bits32 => vals::Mwid::BITS32,
+                    NorSramMemoryDataWidth::Bits8 => vals::Mwid::Bits8,
+                    NorSramMemoryDataWidth::Bits16 => vals::Mwid::Bits16,
+                    NorSramMemoryDataWidth::Bits32 => vals::Mwid::Bits32,
                 }); // Memory data width
 
                 bcr.set_mtyp(match self.config.memory_type {
-                    NorSramMemoryType::Sram => vals::Mtyp::SRAM,
-                    NorSramMemoryType::Psram => vals::Mtyp::PSRAM,
-                    NorSramMemoryType::Flash => vals::Mtyp::FLASH,
+                    NorSramMemoryType::Sram => vals::Mtyp::Sram,
+                    NorSramMemoryType::Psram => vals::Mtyp::Psram,
+                    NorSramMemoryType::Flash => vals::Mtyp::Flash,
                 }); // Memory types
 
                 bcr.set_muxen(self.config.data_address_mux_enabled); // Data address mux
 
                 bcr.set_cpsize(match self.config.page_size {
-                    NorSramPageSize::NoBurstSplit => vals::Cpsize::NO_BURST_SPLIT,
-                    NorSramPageSize::Bytes128 => vals::Cpsize::BYTES128,
-                    NorSramPageSize::Bytes256 => vals::Cpsize::BYTES256,
-                    NorSramPageSize::Bytes512 => vals::Cpsize::BYTES512,
-                    NorSramPageSize::Bytes1024 => vals::Cpsize::BYTES1024,
+                    NorSramPageSize::NoBurstSplit => vals::Cpsize::NoBurstSplit,
+                    NorSramPageSize::Bytes128 => vals::Cpsize::Bytes128,
+                    NorSramPageSize::Bytes256 => vals::Cpsize::Bytes256,
+                    NorSramPageSize::Bytes512 => vals::Cpsize::Bytes512,
+                    NorSramPageSize::Bytes1024 => vals::Cpsize::Bytes1024,
                 });
 
                 trace!("fmc bcr: {}", bcr);
-
-                Ok(())
-            })?;
+            });
         }
 
         Ok(())
@@ -715,11 +711,8 @@ use super::{
     D18Pin, D19Pin, D20Pin, D21Pin, D22Pin, D23Pin, D24Pin, D25Pin, D26Pin, D27Pin, D28Pin, D29Pin, D30Pin, D31Pin,
     NOEPin, NWEPin, SDNE0Pin,
 };
-
-use crate::{
-    Peri,
-    gpio::{AfType, OutputType, Pull, Speed},
-};
+use crate::Peri;
+use crate::gpio::{AfType, OutputType, Pull, Speed};
 
 /// Initializers and constructors for settings pins to their required
 /// alternate functions for FMC use, and returning a pointer to the

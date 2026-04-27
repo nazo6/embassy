@@ -14,17 +14,14 @@
 // config values and timing parameters.
 pub mod devices;
 
-use embassy_time::Timer;
-
 use core::cmp;
 
-use crate::{
-    fmc::{self, Fmc, FmcSdramBank},
-    time::Hertz,
-};
+use embassy_time::Timer;
 
+use crate::fmc::{self, Fmc, FmcSdramBank};
 // Shadow the metapac values to make them more convenient to access.
 pub use crate::pac::fmc::vals;
+use crate::time::Hertz;
 
 /// Specifies how many cycles to delay for reading.
 #[cfg_attr(feature = "defmt", derive(defmt::Format))]
@@ -41,9 +38,9 @@ pub enum ReadPipeDelayCycles {
 impl Into<vals::Rpipe> for ReadPipeDelayCycles {
     fn into(self) -> vals::Rpipe {
         match self {
-            ReadPipeDelayCycles::NoDelay => vals::Rpipe::NO_DELAY,
-            ReadPipeDelayCycles::OneCycle => vals::Rpipe::CLOCKS1,
-            ReadPipeDelayCycles::TwoCycles => vals::Rpipe::CLOCKS2,
+            ReadPipeDelayCycles::NoDelay => vals::Rpipe::NoDelay,
+            ReadPipeDelayCycles::OneCycle => vals::Rpipe::Clocks1,
+            ReadPipeDelayCycles::TwoCycles => vals::Rpipe::Clocks2,
         }
     }
 }
@@ -63,9 +60,9 @@ pub enum MemoryDataWidth {
 impl Into<vals::Mwid> for MemoryDataWidth {
     fn into(self) -> vals::Mwid {
         match self {
-            MemoryDataWidth::Bits8 => vals::Mwid::BITS8,
-            MemoryDataWidth::Bits16 => vals::Mwid::BITS16,
-            MemoryDataWidth::Bits32 => vals::Mwid::BITS32,
+            MemoryDataWidth::Bits8 => vals::Mwid::Bits8,
+            MemoryDataWidth::Bits16 => vals::Mwid::Bits16,
+            MemoryDataWidth::Bits32 => vals::Mwid::Bits32,
         }
     }
 }
@@ -154,10 +151,10 @@ pub enum ColumnBits {
 impl Into<vals::Nc> for ColumnBits {
     fn into(self) -> vals::Nc {
         match self {
-            ColumnBits::Bits8 => vals::Nc::BITS8,
-            ColumnBits::Bits9 => vals::Nc::BITS9,
-            ColumnBits::Bits10 => vals::Nc::BITS10,
-            ColumnBits::Bits11 => vals::Nc::BITS11,
+            ColumnBits::Bits8 => vals::Nc::Bits8,
+            ColumnBits::Bits9 => vals::Nc::Bits9,
+            ColumnBits::Bits10 => vals::Nc::Bits10,
+            ColumnBits::Bits11 => vals::Nc::Bits11,
         }
     }
 }
@@ -177,9 +174,9 @@ pub enum RowBits {
 impl Into<vals::Nr> for RowBits {
     fn into(self) -> vals::Nr {
         match self {
-            RowBits::Bits11 => vals::Nr::BITS11,
-            RowBits::Bits12 => vals::Nr::BITS12,
-            RowBits::Bits13 => vals::Nr::BITS13,
+            RowBits::Bits11 => vals::Nr::Bits11,
+            RowBits::Bits12 => vals::Nr::Bits12,
+            RowBits::Bits13 => vals::Nr::Bits13,
         }
     }
 }
@@ -199,9 +196,9 @@ pub enum CasLatency {
 impl Into<vals::Cas> for CasLatency {
     fn into(self) -> vals::Cas {
         match self {
-            CasLatency::Cycle1 => vals::Cas::CLOCKS1,
-            CasLatency::Cycle2 => vals::Cas::CLOCKS2,
-            CasLatency::Cycle3 => vals::Cas::CLOCKS3,
+            CasLatency::Cycle1 => vals::Cas::Clocks1,
+            CasLatency::Cycle2 => vals::Cas::Clocks2,
+            CasLatency::Cycle3 => vals::Cas::Clocks3,
         }
     }
 }
@@ -219,8 +216,8 @@ pub enum InternalBanks {
 impl Into<vals::Nb> for InternalBanks {
     fn into(self) -> vals::Nb {
         match self {
-            InternalBanks::TwoBanks => vals::Nb::NB2,
-            InternalBanks::FourBanks => vals::Nb::NB4,
+            InternalBanks::TwoBanks => vals::Nb::Nb2,
+            InternalBanks::FourBanks => vals::Nb::Nb4,
         }
     }
 }
@@ -437,13 +434,13 @@ impl SdramCommand {
     /// Returns the metapac mode for the FMC's SDCMR register.
     pub fn mode(&self) -> vals::Mode {
         match self {
-            SdramCommand::NormalMode => vals::Mode::NORMAL,
-            SdramCommand::ClkEnable => vals::Mode::CLOCK_CONFIGURATION_ENABLE,
-            SdramCommand::Pall => vals::Mode::PALL,
-            SdramCommand::AutoRefresh(_) => vals::Mode::AUTO_REFRESH_COMMAND,
-            SdramCommand::LoadMode(_) => vals::Mode::LOAD_MODE_REGISTER,
-            SdramCommand::SelfRefresh => vals::Mode::SELF_REFRESH_COMMAND,
-            SdramCommand::PowerDown => vals::Mode::POWER_DOWN_COMMAND,
+            SdramCommand::NormalMode => vals::Mode::Normal,
+            SdramCommand::ClkEnable => vals::Mode::ClockConfigurationEnable,
+            SdramCommand::Pall => vals::Mode::Pall,
+            SdramCommand::AutoRefresh(_) => vals::Mode::AutoRefreshCommand,
+            SdramCommand::LoadMode(_) => vals::Mode::LoadModeRegister,
+            SdramCommand::SelfRefresh => vals::Mode::SelfRefreshCommand,
+            SdramCommand::PowerDown => vals::Mode::PowerDownCommand,
         }
     }
 
@@ -539,9 +536,9 @@ impl<'a, 'd, T: fmc::Instance> Sdram<'a, 'd, T> {
             (
                 sd_clock_hz,
                 match divide {
-                    1 => vals::Sdclk::DISABLED,
-                    2 => vals::Sdclk::DIV2,
-                    3 => vals::Sdclk::DIV3,
+                    1 => vals::Sdclk::Disabled,
+                    2 => vals::Sdclk::Div2,
+                    3 => vals::Sdclk::Div3,
                     _ => panic!("Source clock too fast for required SD_CLOCK. The maximum division ratio is 3"),
                 },
             )
@@ -926,11 +923,8 @@ use super::{
     D29Pin, D30Pin, D31Pin, NBL0Pin, NBL1Pin, NBL2Pin, NBL3Pin, SDCKE0Pin, SDCKE1Pin, SDCLKPin, SDNCASPin, SDNE0Pin,
     SDNE1Pin, SDNRASPin, SDNWEPin,
 };
-
-use crate::{
-    Peri,
-    gpio::{AfType, OutputType, Pull, Speed},
-};
+use crate::Peri;
+use crate::gpio::{AfType, OutputType, Pull, Speed};
 
 /// Initializers and constructors for settings pins to their required
 /// alternate functions for FMC use, and returning a pointer to the
