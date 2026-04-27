@@ -498,10 +498,7 @@ impl<'a, 'd, T: super::Instance> NorSram<'a, 'd, T> {
                 #[cfg(any(fmc_v1x3, fmc_v2x1))]
                 bcr.set_cburstrw(self.config.write_burst_enable);
                 #[cfg(not(any(fmc_v1x3, fmc_v2x1)))]
-                bcr.set_cburstrw(match self.config.write_burst_enable {
-                    true => vals::Cburstrw::ASYNCHRONOUS,
-                    false => vals::Cburstrw::SYNCHRONOUS,
-                });
+                bcr.set_cburstrw(self.config.write_burst_enable);
 
                 // tODO: is true enabled?
                 bcr.set_asyncwait(self.config.asynchronous_wait); // Asyncronous wait
@@ -547,7 +544,7 @@ impl<'a, 'd, T: super::Instance> NorSram<'a, 'd, T> {
                     NorSramPageSize::Bytes1024 => vals::Cpsize::Bytes1024,
                 });
 
-                trace!("fmc bcr: {}", bcr);
+                // trace!("fmc bcr: {}", bcr);
             });
         } else {
             regs.bcr(match self.bank {
@@ -561,10 +558,7 @@ impl<'a, 'd, T: super::Instance> NorSram<'a, 'd, T> {
                 #[cfg(any(fmc_v1x3, fmc_v2x1))]
                 bcr.set_cburstrw(self.config.write_burst_enable);
                 #[cfg(not(any(fmc_v1x3, fmc_v2x1)))]
-                bcr.set_cburstrw(match self.config.write_burst_enable {
-                    true => vals::Cburstrw::ASYNCHRONOUS,
-                    false => vals::Cburstrw::SYNCHRONOUS,
-                });
+                bcr.set_cburstrw(self.config.write_burst_enable);
 
                 bcr.set_asyncwait(self.config.asynchronous_wait); // Asyncronous wait
                 bcr.set_extmod(self.config.extended_mode); // Extended mode
@@ -606,7 +600,7 @@ impl<'a, 'd, T: super::Instance> NorSram<'a, 'd, T> {
                     NorSramPageSize::Bytes1024 => vals::Cpsize::Bytes1024,
                 });
 
-                trace!("fmc bcr: {}", bcr);
+                // trace!("fmc bcr: {}", bcr);
             });
         }
 
@@ -660,7 +654,7 @@ impl<'a, 'd, T: super::Instance> NorSram<'a, 'd, T> {
                 NorSramAccessMode::AccessModeC => vals::Accmod::C,
                 NorSramAccessMode::AccessModeD => vals::Accmod::D,
             });
-            trace!("fmc btr: {}", btr);
+            // trace!("fmc btr: {}", btr);
         });
 
         Ok(())

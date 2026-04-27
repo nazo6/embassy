@@ -153,7 +153,7 @@ rustdoc-args = ["--cfg", "docsrs"]
 
 [dependencies]
 embassy-sync = { version = "0.8.0", path = "../embassy-sync" }
-embassy-time = { version = "0.5.1", path = "../embassy-time", optional = true }
+embassy-time = { version = "0.5.1", path = "../embassy-time" }
 embassy-time-driver = { version = "0.2.2", path = "../embassy-time-driver", optional = true }
 embassy-time-queue-utils = { version = "0.3.2", path = "../embassy-time-queue-utils", optional = true }
 embassy-futures = { version = "0.1.2", path = "../embassy-futures" }
@@ -229,7 +229,7 @@ default = ["rt"]
 
 ## Enable `stm32-metapac`'s `rt` feature
 rt = ["stm32-metapac/rt"]
-test = ["embassy-time?/generic-queue-8"]
+test = ["embassy-time/generic-queue-8"]
 
 ## Use [`defmt`](https://docs.rs/defmt/latest/defmt/) for logging
 defmt = [
@@ -240,7 +240,7 @@ defmt = [
     "embedded-io-async/defmt",
     "embassy-usb-driver/defmt",
     "embassy-net-driver/defmt",
-    "embassy-time?/defmt",
+    "embassy-time/defmt",
     "embassy-usb-synopsys-otg/defmt",
     "stm32-metapac/defmt"
 ]
@@ -288,7 +288,7 @@ unchecked-overclocking = []
 #! ## Time
 
 ## Enables additional driver features that depend on embassy-time
-time = ["dep:embassy-time", "embassy-embedded-hal/time"]
+time = ["embassy-embedded-hal/time"]
 
 # Features starting with `_` are for internal use only. They're not intended
 # to be enabled by other crates, and are not covered by semver guarantees.
