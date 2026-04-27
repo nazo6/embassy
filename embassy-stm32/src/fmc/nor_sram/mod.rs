@@ -77,73 +77,73 @@ pub struct NorSramConfiguration {
     /// multiplexed on the data bus or not.
     ///
     /// Register: BCR1/2/3/4[MUXEN]
-    data_address_mux_enabled: bool, // MUXEN
+    pub data_address_mux_enabled: bool, // MUXEN
 
     /// Specifies the type of external memory attached to
     /// the corresponding memory device.
-    memory_type: NorSramMemoryType, // MTYP
+    pub memory_type: NorSramMemoryType, // MTYP
 
     /// Specifies the external memory device width.
-    memory_data_width: NorSramMemoryDataWidth, // MWID
+    pub memory_data_width: NorSramMemoryDataWidth, // MWID
 
     /// Enables or disables the burst access mode for Flash memory,
     /// valid only with synchronous burst Flash memories.
     ///
     /// Register: BCR1/2/3/4[BURSTEN]
-    burst_access_mode_enable: bool, // BURSTEN
+    pub burst_access_mode_enable: bool, // BURSTEN
 
     /// Specifies the wait signal polarity, valid only when accessing
     /// the Flash memory in burst mode.
-    wait_signal_enable_polarity: NorSramWaitSignalPolarity, // WAITPOL
+    pub wait_signal_enable_polarity: NorSramWaitSignalPolarity, // WAITPOL
 
     /// Specifies if the wait signal is asserted by the memory one
     /// clock cycle before the wait state or during the wait state,
     /// valid only when accessing memories in burst mode.
-    wait_signal_enable_active: NorSramWaitSignalActive, // WAITCFG
+    pub wait_signal_enable_active: NorSramWaitSignalActive, // WAITCFG
 
     /// Enables or disables the write operation in the selected device by the FMC.
     ///
     /// Register: BCR1/2/3/4[WREN]
-    write_enable: bool, // WREN
+    pub write_enable: bool, // WREN
 
     /// Enables or disables the wait state insertion via wait
     /// signal, valid for Flash memory access in burst mode.
     ///
     /// Register: BCR1/2/3/4[WAITEN]
-    wait_signal_enable: bool, // WAITEN
+    pub wait_signal_enable: bool, // WAITEN
 
     /// Enables or disables the extended mode.
     ///
     /// Register: BCR1/2/3/4[EXTMOD]
-    extended_mode: bool, // EXTMOD
+    pub extended_mode: bool, // EXTMOD
 
     /// Enables or disables wait signal during asynchronous transfers,
     /// valid only with asynchronous Flash memories.
     ///
     /// Register: BCR1/2/3/4[ASYNCWAIT]
-    asynchronous_wait: bool, // ASYNCWAIT
+    pub asynchronous_wait: bool, // ASYNCWAIT
 
     /// Enables or disables the write burst operation for PSRAM.
     ///
     /// Register: BCR1/2/3/4[CBURSTRW]
-    write_burst_enable: bool, // CBURSTRW
+    pub write_burst_enable: bool, // CBURSTRW
 
     /// Enables or disables the FMC clock output to external memory devices.
     /// This parameter is only enabled through the FMC_BCR1 register,
     /// and don't care through FMC_BCR2..4 registers.
     ///
     /// Register: BCR1[CCLKEN]
-    continuous_clock_enable: bool, // CCLKEN
+    pub continuous_clock_enable: bool, // CCLKEN
 
     /// Enables or disables the write FIFO used by the FMC controller.
     /// This parameter is only enabled through the FMC_BCR1 register,
     /// and don't care through FMC_BCR2..4 registers.
     ///
     /// Register: BCR1[WFDIS]
-    write_fifo_disable: bool, // WFDIS
+    pub write_fifo_disable: bool, // WFDIS
 
     // Specifies the memory page size.
-    page_size: NorSramPageSize, // CPSIZE
+    pub page_size: NorSramPageSize, // CPSIZE
 }
 
 /// Specifies the access mode for the attached NOR/PSRAM/SRAM device.
@@ -179,14 +179,14 @@ pub struct NorSramTiming {
     /// Minimum value for ADDSET is 0
     ///
     /// This parameter is not used with synchronous NOR Flash memories.
-    address_setup_time: u8, // addset
+    pub address_setup_time: u8, // addset
 
     /// Defines the number of HCLK cycles to configure
     /// the duration of the address hold time.
     /// This parameter can be a value between Min_Data = 1 and Max_Data = 15.
     ///
     ///  This parameter is not used with synchronous NOR Flash memories.
-    address_hold_time: u8, // addhld
+    pub address_hold_time: u8, // addhld
 
     /// Defines the number of HCLK cycles to configure
     /// the duration of the data setup time.
@@ -196,7 +196,7 @@ pub struct NorSramTiming {
     /// for write accesses, DATAST fmc_ker_ck cycles for read accesses).
     ///
     /// This parameter is used for SRAMs, ROMs and asynchronous multiplexed NOR Flash memories.
-    data_setup_time: u8, // datast
+    pub data_setup_time: u8, // datast
 
     /// Defines the number of HCLK cycles to configure
     /// the duration of the bus turnaround.
@@ -205,14 +205,14 @@ pub struct NorSramTiming {
     /// Time between NEx high to NEx low (BUSTURN fmc_ker_ck)
     ///
     /// This parameter is only used for multiplexed NOR Flash memories.
-    bus_turn_around_duration: u8, // busturn
+    pub bus_turn_around_duration: u8, // busturn
 
     /// Defines the period of CLK clock output signal, expressed in number of
     /// HCLK cycles. This parameter can be a value between Min_Data = 2 and
     /// Max_Data = 16.
     ///
     /// This parameter is not used for asynchronous NOR Flash, SRAM or ROM accesses.
-    clock_division: u8, // clkdiv
+    pub clock_division: u8, // clkdiv
 
     /// Defines the number of memory clock cycles to issue
     /// to the memory before getting the first data.
@@ -221,10 +221,10 @@ pub struct NorSramTiming {
     /// - It is don't care in asynchronous NOR, SRAM or ROM accesses
     /// - It may assume a value between Min_Data = 2 and Max_Data = 17
     /// in NOR Flash memories with synchronous burst mode enable.
-    data_latency: u8, // datlat
+    pub data_latency: u8, // datlat
 
     /// Specifies the asynchronous access mode.
-    access_mode: NorSramAccessMode, // accmod
+    pub access_mode: NorSramAccessMode, // accmod
 }
 
 /// Provides the configuration and timing
