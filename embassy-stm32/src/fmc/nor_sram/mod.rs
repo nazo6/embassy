@@ -700,10 +700,10 @@ macro_rules! fmc_sram_init {
 }
 
 use super::{
-    A0Pin, A1Pin, A2Pin, A3Pin, A4Pin, A5Pin, A6Pin, A7Pin, A8Pin, A9Pin, A10Pin, A11Pin, A12Pin, D0Pin, D1Pin, D2Pin,
+    A0Pin, A1Pin, A2Pin, A3Pin, A4Pin, A5Pin, A6Pin, A7Pin, A8Pin, A9Pin, A10Pin, A11Pin, A12Pin, A16Pin, D0Pin, D1Pin, D2Pin,
     D3Pin, D4Pin, D5Pin, D6Pin, D7Pin, D8Pin, D9Pin, D10Pin, D11Pin, D12Pin, D13Pin, D14Pin, D15Pin, D16Pin, D17Pin,
     D18Pin, D19Pin, D20Pin, D21Pin, D22Pin, D23Pin, D24Pin, D25Pin, D26Pin, D27Pin, D28Pin, D29Pin, D30Pin, D31Pin,
-    NOEPin, NWEPin, SDNE0Pin,
+    NOEPin, NWEPin, SDNE0Pin, NE1Pin,
 };
 use crate::Peri;
 use crate::gpio::{AfType, OutputType, Pull, Speed};
@@ -769,6 +769,22 @@ impl<'a, 'd, T: super::Instance> NorSram<'a, 'd, T> {
         ],
         ctrl: [
             (sdne: SDNE0Pin), (nwe: NWEPin), (noe: NOEPin)
+        ]
+    ));
+
+    fmc_sram_init!(init_lcd_a1bits_d16bits_bank1: (
+        bank: FmcSramBank::Bank1,
+        addr: [
+            (a0: A16Pin)
+        ],
+        d: [
+            (d0: D0Pin), (d1: D1Pin), (d2: D2Pin), (d3: D3Pin), (d4: D4Pin), (d5: D5Pin), (d6: D6Pin), (d7: D7Pin),
+            (d8: D8Pin), (d9: D9Pin), (d10: D10Pin), (d11: D11Pin), (d12: D12Pin), (d13: D13Pin), (d14: D14Pin), (d15: D15Pin)
+        ],
+        ctrl: [
+            (ne: NE1Pin),
+            (nwe: NWEPin),
+            (noe: NOEPin)
         ]
     ));
 }
